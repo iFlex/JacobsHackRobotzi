@@ -1,4 +1,4 @@
-module.exports = function(){
+module.exports = new( function(){
     var db = 0;
     var endpoint = "user";
     this.setDBController = function(dbc){
@@ -158,4 +158,4 @@ module.exports = function(){
         "chargers":"refreshAssets",
         "find":"findHelpers"
     };
-}
+})();
