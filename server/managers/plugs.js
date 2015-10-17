@@ -4,6 +4,7 @@ module.exports = new (function(){
   var STORE_LOCATION = "store/";
   var db = 0;
   var imgIndex = 0;
+  var endpoint = "plug";
 
   this.setDBController = function(dbc){
     db = dbc;
@@ -30,6 +31,7 @@ module.exports = new (function(){
 
         console.log('It\'s saved! in same location.');
         result.success = true;
+        result.endpoint = endpoint;
         callback(result);
       });
     } catch (e){
@@ -48,7 +50,7 @@ module.exports = new (function(){
     //sb.select()
     //TMP
     db.select({
-      table:"plug",
+      table:endpoint,
       collect:["COUNT(id) as MAX_INDEX"]
     },function(result){
       if(result.success == true){
@@ -64,7 +66,7 @@ module.exports = new (function(){
     function doInsert(){
        //insert it
            db.insert({
-             table:"plug",
+             table:endpoint,
              write:{
                id:imgIndex,
                lat:data.lat,
@@ -82,13 +84,14 @@ module.exports = new (function(){
              console.log("Result from query");
              console.log(res);
              var imid = imgIndex++;
-             var extension = ".txt";
+             var extension = ".jpeg  ";
              storeImage(data.image,imid+extension,function(res){
                if(!res.success){
                  callback(res);
                  return;
                }
                result.success = true;
+               result.endpoint = endpoint;
                result.id = imid;
                callback(result);
              })
@@ -99,7 +102,7 @@ module.exports = new (function(){
   this.rateUp = function(data,callback){
     try {
       db.update({
-        table:"plug",
+        table:endpoint,
         match:{
           id:data.id
         },
@@ -116,13 +119,16 @@ module.exports = new (function(){
   this.rateDn = function(data,callback){
     try {
       db.update({
-        table:"plug",
+        table:endpoint,
         match:{
           id:data.id
         },
         write:{
           rank:["rank - 1"]
-        }},callback);
+        }},function(r){
+        r.endpoint = endpoint;
+        callback(r);
+      });
     } catch (e) {
       console.log("PLUGS: Error RateDown");
       console.log(e);
@@ -133,7 +139,7 @@ module.exports = new (function(){
   this.getPlugs = function(data,callback){
     try {
       db.select({
-        table:"plug",
+        table:endpoint,
         collect:["*"],
         restrict:["(lat - "+data.lat+")*(lat - "+data.lat+") + (lon - "+data.lon+")*(lon - "+data.lon+") <"+(data.radius*data.radius)]
       },function(result) {
@@ -142,6 +148,7 @@ module.exports = new (function(){
           return;
         }
         ////////////////
+        result.endpoint = endpoint;
         callback(result);
       });
     } catch (e){
@@ -155,7 +162,7 @@ module.exports = new (function(){
     try {
       var data = fs.readFileSync(STORE_LOCATION+d.id+".jpeg");
       var base64data = new Buffer(data).toString('base64');
-      var result = {success:true,image:base64data};
+      var result = {success:true,endpoint:endpoint,image:base64data};
       callback(result);
     } catch(e){
       consle.log("PLUG: Could not read file "+fileName);

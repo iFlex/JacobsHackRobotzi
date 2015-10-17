@@ -4,7 +4,7 @@ var http = require('http');
 var mime = require('mime');
 var server = http.createServer();
 var io = require('socket.io')(server);
-var sql = require('sql');
+var sql = require('./sql');
 
 //import components
 var plugs = require('./managers/plugs');
