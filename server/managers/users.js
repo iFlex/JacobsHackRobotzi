@@ -35,7 +35,7 @@ module.export = function(){
             lat:0,
             lon:0,
             email:"unknown@gmail.com",
-           },function(res){
+           }},function(res){
              if(!res.success){
                callback(res);
                return;
@@ -135,7 +135,8 @@ module.export = function(){
                 db.select({
                     table:endpoint,
                     collect:["*"],
-                    restrict:["id IN ("+users.join(",")+")"]
+                    restrict:["id IN ("+users.join(",")+")",
+                    "(lat - "+data.lat+")*(lat - "+data.lat+") + (lon - "+data.lon+")*(lon - "+data.lon+") <"+(data.radius*data.radius)"]
                 },function(result){
                     if(result.success == true){
                         result.endpoint = endpoint;
