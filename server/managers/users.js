@@ -35,7 +35,8 @@ module.export = function(){
             lat:0,
             lon:0,
             email:"unknown@gmail.com",
-           }},function(res){
+           }
+        },function(res) {
              if(!res.success){
                callback(res);
                return;
@@ -43,7 +44,6 @@ module.export = function(){
              res.endpoint = endpoint;
              res.id = token;
              callback(res);
-           })
         });
     }
     //authenticates a user
