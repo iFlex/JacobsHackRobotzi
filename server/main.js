@@ -11,6 +11,7 @@ var plugs = require('./managers/plugs');
 var users = require('./managers/users');
 var chat = require('./managers/chat');
 
+sql.init("database.db");
 //pass db controller
 plugs.setDBController(sql);
 
@@ -26,10 +27,14 @@ io.on('connection', function (socket) {
       return;
     }
 
+    function sendToUser(data){
+        socket.emit("/",JSON.stringify(data));
+    }
+
     switch(data.endpoint){
-      case "plug":plugs.handle(socket,data);break;
-      case "user":users.handle(socket,data);break;
-      case "chat":chat.handler(socket,data);break;
+      case "plug":plugs.handle(socket,data,sendToUser);break;
+      case "user":users.handle(socket,data,sendToUser);break;
+      case "chat":chat.handler(socket,data,sendToUser);break;
     }
 	});
 });

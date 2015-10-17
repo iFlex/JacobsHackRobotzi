@@ -1,7 +1,7 @@
 //packet structure
 // .action = add|rateUp|rateDn|get
 module.exports = new (function(){
-
+  var STORE_LOCATION = "store/";
   var db = 0;
   this.setDBController = function(dbc){
     db = dbc;
@@ -14,7 +14,7 @@ module.exports = new (function(){
     } catch(e) {
       console.log("Plugs:: Error");
       console.log(e);
-      //callback({success:false,error:e});
+      callback({success:false,error:e});
     }
   }
 
@@ -23,7 +23,7 @@ module.exports = new (function(){
     var fs = require("fs");
     var result = {success:false};
     try {
-      fs.writeFile("store/"+fileName, buf, function (err) {
+      fs.writeFile(STORE_LOCATION+fileName, buf, function (err) {
         if (err) throw err;
 
         console.log('It\'s saved! in same location.');
@@ -129,8 +129,17 @@ module.exports = new (function(){
     }
   }
 
-  function getImage = function(){
-
+  function getImage = function(d,callback){
+    try {
+      var data = fs.readFileSync(STORE_LOCATION+d.id+".jpeg");
+      var base64data = new Buffer(data).toString('base64');
+      var result = {success:true,image:base64data};
+      callback(result);
+    } catch(e){
+      consle.log("PLUG: Could not read file "+fileName);
+      console.log(e);
+      callback({success:false,error:e})
+    }
   }
 
   var actionToMethod = {

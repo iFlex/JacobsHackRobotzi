@@ -78,13 +78,13 @@ module.exports = new (function(){
 		
 		result = db.run( querry , function(err, row){
 			console.log( row );
-			
+
 			console.log("bullshit");
 			console.log(err);
 		});
-		
+
 		result.success = true;
-		
+
 	}
 	catch( e ){
 
