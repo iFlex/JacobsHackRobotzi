@@ -49,6 +49,7 @@ module.exports = new (function(){
   this.select = function( map, callback ){
 	var querry= "SELECT ";
 	var parameters = [];
+	var result = {};
 	for( key in map){
 		if( map.key === true && key!= "#tabel" ){
 
@@ -60,14 +61,24 @@ module.exports = new (function(){
 	querry += map["#table"];
 	querry += ";";
 
-	var stmt = db.prepare( querry );
-	var result = stmt.run.apply( stmt, parameters );
-	stmt.finalize();
+	try{
 
+		var stmt = db.prepare( querry );
+		result = stmt.run.apply( stmt, parameters );
+		stmt.finalize();
+	}
+	catch( e){
+	
+		result.error = e;
+		result.success = false;
+		callback( result );
+		return;
+	}
 	result.success = true;
 
 	callback( result );
 
   }
+  
 
 })();
