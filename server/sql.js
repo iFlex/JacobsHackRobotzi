@@ -76,11 +76,11 @@ module.exports = new (function(){
 		//stmt.finalize();
 		console.log(querry);
 		
-		result = db.run( querry , function(err, row){
-			console.log( row );
+		result = db.all( querry , function(err, rows){
+			console.log( rows );
 			
-			console.log("bullshit");
-			console.log(err);
+			//console.log("bullshit");
+			//console.log(err);
 		});
 		
 		result.success = true;
