@@ -41,11 +41,10 @@ module.exports = new (function(){
       db.run("CREATE TABLE if not exists  plug"+
       "(id           INTEGER        PRIMARY KEY    AUTOINCREMENT  ,"+
       "lat           INTEGER        NOT NULL                      ,"+
-      "lung          INTEGER        NOT NULL                      ,"+
+      "lon           INTEGER        NOT NULL                      ,"+
       "rank          INTEGER        NOT NULL                      ,"+
       "description   STRING         NOT NULL                      ,"+
-      "photo_url     STRING         NOT NULL                      ,"+
-      "number        INTEGER                                      )");
+      "slots         INTEGER                                      )");
     });
   }
   this.init = function(dbName){
