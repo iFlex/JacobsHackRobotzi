@@ -14,6 +14,9 @@ var chat = require('./managers/chat');
 sql.init("database.db");
 //pass db controller
 plugs.setDBController(sql);
+users.setDBController(sql);
+chat.setDBController(sql);
+
 var commEndpoint = "live"
 io.on('connection', function (socket) {
 	console.log("New connection");

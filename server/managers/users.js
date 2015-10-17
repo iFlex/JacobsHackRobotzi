@@ -1,4 +1,4 @@
-module.export = function(){
+module.exports = function(){
     var db = 0;
     var endpoint = "user";
     this.setDBController = function(dbc){
