@@ -4,18 +4,9 @@ module.exports = new (function(){
   var STORE_LOCATION = "store/";
   var db = 0;
   var imgIndex = 0;
+
   this.setDBController = function(dbc){
     db = dbc;
-    db.select({
-      table:"plug",
-      collect:["COUNT(id) as MAX_INDEX"]
-    },function(result){
-      if(result.success == true){
-        console.log("Found largest record");
-        console.log(result);
-        imgIndex = result.rows[0]["MAX_INDEX"] || 0;
-      }
-    })
   }
 
   this.handle = function(socket,data,callback){
@@ -55,36 +46,54 @@ module.exports = new (function(){
     var result = {success:false}
     //check if it exists
     //sb.select()
-
-    //insert it
-    db.insert({
+    //TMP
+    db.select({
       table:"plug",
-      write:{
-        id:imgIndex,
-        lat:data.lat,
-        lon:data.lon,
-        description:data.description
+      collect:["COUNT(id) as MAX_INDEX"]
+    },function(result){
+      if(result.success == true){
+        console.log("Found largest record");
+        console.log(result);
+        imgIndex = result.rows[0]["MAX_INDEX"] || 0;
+        doInsert();
+      }else{
+        callback({success:false,error:result.error});
       }
-    },function(res){
-      if(!res.success){
-        callback(res);
-        return;
-      }
-      //collect id from
-      console.log("Result from query");
-      console.log(res);
-      var imid = imgIndex++;
-      var extension = ".txt";
-      storeImage(data.image,imid+extension,function(res){
-        if(!res.success){
-          callback(res);
-          return;
-        }
-        result.success = true;
-        result.id = imid;
-        callback(result);
-      })
     });
+
+    function doInsert(){
+       //insert it
+           db.insert({
+             table:"plug",
+             write:{
+               id:imgIndex,
+               lat:data.lat,
+               lon:data.lon,
+               rank:0,
+               slots:data.slots || 1,
+               description:data.description
+             }
+           },function(res){
+             if(!res.success){
+               callback(res);
+               return;
+             }
+             //collect id from
+             console.log("Result from query");
+             console.log(res);
+             var imid = imgIndex++;
+             var extension = ".txt";
+             storeImage(data.image,imid+extension,function(res){
+               if(!res.success){
+                 callback(res);
+                 return;
+               }
+               result.success = true;
+               result.id = imid;
+               callback(result);
+             })
+           });
+    }
   }
 
   this.rateUp = function(data,callback){
@@ -94,8 +103,8 @@ module.exports = new (function(){
         match:{
           id:data.id
         },
-        set:{
-          rank:"rank + 2"
+        write:{
+          rank:["rank + 2"]
         }},callback);
     } catch (e) {
       console.log("PLUGS: Error RateUp");
@@ -111,8 +120,8 @@ module.exports = new (function(){
         match:{
           id:data.id
         },
-        set:{
-          rank:"rank - 1"
+        write:{
+          rank:["rank - 1"]
         }},callback);
     } catch (e) {
       console.log("PLUGS: Error RateDown");
@@ -125,15 +134,15 @@ module.exports = new (function(){
     try {
       db.select({
         table:"plug",
-        collect:["id","lat","long"],
-        restrict:["SQRT( POW(lat - "+data.lat+",2) + POW( lon - "+data.lon+",2)  ) < "+rad]
+        collect:["*"],
+        restrict:["(lat - "+data.lat+")*(lat - "+data.lat+") + (lon - "+data.lon+")*(lon - "+data.lon+") <"+(data.radius*data.radius)]
       },function(result) {
         if(!result.success){
           callback(result);
           return;
         }
-        //send back to user
-
+        ////////////////
+        callback(result);
       });
     } catch (e){
       console.log("PLUGS: Error getPlugs");
@@ -159,7 +168,7 @@ module.exports = new (function(){
     add:"addPlug",
     rateUp:"rateUp",
     rateDn:"rateDn",
-    get:"getPlugs",
+    "get":"getPlugs",
     getImage:"getImage"
   };
 })();
