@@ -29,7 +29,7 @@ module.exports = new (function(){
   function initSchema(){
     db.serialize(function() {
       db.run("CREATE TABLE if not exists user"+
-      "(id           INTEGER        PRIMARY KEY    AUTOINCREMENT  ,"+
+      "(id           STRING         PRIMARY KEY    AUTOINCREMENT  ,"+
       "rating_giver  INTEGER        DEFAULT 0                     ,"+
       "rating_needer INTEGER        DEFAULT 0                     ,"+
       "lon           REAL           NOT NULL                      ,"+
@@ -48,11 +48,11 @@ module.exports = new (function(){
       "(id           INTEGER        PRIMARY KEY    AUTOINCREMENT  ,"+
       "model         STRING         NOT NULL                      ,"+
       "description   STRING         NOT NULL                      ,"+
-      "user          INTEGER        REFERENCES user (id)          )");
+      "user          STRING         REFERENCES user (id)          )");
       
       db.run("CREATE TABLE if not exists conversation"+
-      "(token_helper INTEGER        REFERENCES user (id)           ,"+
-      "token_needer INTEGER         REFERENCES user (id)           )");
+      "(token_helper STRING        REFERENCES user (id)           ,"+
+      "token_needer  STRING         REFERENCES user (id)           )");
       
     });
   }
