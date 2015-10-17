@@ -23,7 +23,7 @@ module.exports = new (function(){
     var fs = require("fs");
     var result = {success:false};
     try {
-      fs.writeFile(fileName, buf, function (err) {
+      fs.writeFile("store/"+fileName, buf, function (err) {
         if (err) throw err;
 
         console.log('It\'s saved! in same location.');
@@ -38,13 +38,43 @@ module.exports = new (function(){
   this.storeTest = function(data){
     storeImage(data,"test.txt",console.log);
   }
+
   this.addPlug = function(data,callback){
-    //add coordinates
-    imgid
+    var result = {success:false}
+    //check if it exists
+    //sb.select()
+    //insert it
+    var rawImage = data.rawImage;
+    var extension = data.extension
+
+    delete data.rawImage;
+    delete data.extension;
+    data["#table"] = "plug";
+    db.insert(data,function(res){
+      if(!res.success){
+        callback(res)
+        return;
+      }
+      //collect id from
+      console.log("Result from query");
+      console.log(res);
+      var imid = 0;
+      storeImage(rawImage,imid+extension,function(res){
+        if(!res.success){
+          callback(res);
+          return;
+        }
+        result.success = true;
+        result.id = imid;
+        callback(result);
+      })
+    });
   }
+
   this.rateUp = function(data,callback){
 
   }
+
   this.rateDn = function(data,callback){
 
   }
