@@ -56,7 +56,7 @@ module.exports = new (function(){
 	}
 	querry += "FROM ";
 	querry += map["table"];
-	querry += "WHERE ";
+	querry += " WHERE ";
 	
 	for( i in map.restrict ){
 		
