@@ -29,22 +29,31 @@ module.exports = new (function(){
   function initSchema(){
     db.serialize(function() {
       db.run("CREATE TABLE if not exists user"+
-      "(id           INTEGER        PRIMARY KEY   AUTOINCREMENT   ,"+
+      "(id           INTEGER        PRIMARY KEY    AUTOINCREMENT  ,"+
       "rating_giver  INTEGER        DEFAULT 0                     ,"+
       "rating_needer INTEGER        DEFAULT 0                     ,"+
+      "lon           REAL           NOT NULL                      ,"+
+      "lat           REAL           NOT NULL                      ,"+
       "email         STRING         NOT NULL                      )");
-
-      db.run("CREATE TABLE if not exists  token"+
-      "(id           INTEGER        REFERENCES User ( id )        ,"+
-      "token         STRING         NOT NULL                      )");
 
       db.run("CREATE TABLE if not exists  plug"+
       "(id           INTEGER        PRIMARY KEY    AUTOINCREMENT  ,"+
-      "lat           INTEGER        NOT NULL                      ,"+
-      "lon           INTEGER        NOT NULL                      ,"+
+      "lat           REAL           NOT NULL                      ,"+
+      "lon           REAL           NOT NULL                      ,"+
       "rank          INTEGER        DEFAULT 0                     ,"+
       "description   STRING         NOT NULL                      ,"+
       "slots         INTEGER        DEFAULT 1                     )");
+      
+      db.run("CREATE TABLE if not exists charger"+
+      "(id           INTEGER        PRIMARY KEY    AUTOINCREMENT  ,"+
+      "model         STRING         NOT NULL                      ,"+
+      "description   STRING         NOT NULL                      ,"+
+      "user          INTEGER        REFERENCES user (id)          )");
+      
+      db.run("CREATE TABLE if not exists conversation"+
+      "(token_helper INTEGER        REFERENCES user (id)           ,"+
+      "token_needer INTEGER         REFERENCES user (id)           )");
+      
     });
   }
   this.init = function(dbName){
@@ -53,7 +62,7 @@ module.exports = new (function(){
   }
 
   this.testInsert = function(){
-    var stmt = db.prepare("INSERT INTO User VALUES (?, ?, ?, ?)");
+    var stmt = db.prepare("INSERT INTO user VALUES (?, ?, ?, ?)");
     for (var i = 0; i < 10; i++) {
       stmt.run( i , i , i , "@gmail.com"  );
     }
@@ -62,7 +71,7 @@ module.exports = new (function(){
   }
 
   this.testSelect = function(){
-    db.each("SELECT *  FROM User", function(err, row) {
+    db.each("SELECT *  FROM user", function(err, row) {
         console.log("test row:");
         console.log(row);
         console.log(err);
@@ -211,6 +220,7 @@ module.exports = new (function(){
 		report( result, querry, callback);
 		
 	}
+		
 	
 
 })();
