@@ -18,24 +18,29 @@ plugs.setDBController(sql);
 io.on('connection', function (socket) {
 	console.log("New connection");
 	socket.on('/', function (data) {
-    console.log("data from user");
-    console.log(data)
-    try {
-      data = JSON.parse(data);
-    } catch(e){
-      console.log("ERROR PARSING DATA",e);
-      return;
-    }
+        console.log("data from user");
+        console.log(data)
+        try {
+          data = JSON.parse(data);
+        } catch(e) {
+          console.log("ERROR PARSING DATA",e);
+          return;
+        }
 
-    function sendToUser(data){
-        socket.emit("/",JSON.stringify(data));
-    }
+        function sendToUser(data){
+            if(data.success == true)
+                socket.emit("/",JSON.stringify(data));
+            else {
+                console.log("ERROR PROCESSING REQUEST");
+                console.log(data);
+            }
+        }
 
-    switch(data.endpoint){
-      case "plug":plugs.handle(socket,data,sendToUser);break;
-      case "user":users.handle(socket,data,sendToUser);break;
-      case "chat":chat.handler(socket,data,sendToUser);break;
-    }
+        switch(data.endpoint){
+          case "plug":plugs.handle(socket,data,sendToUser);break;
+          case "user":users.handle(socket,data,sendToUser);break;
+          case "chat":chat.handler(socket,data,sendToUser);break;
+        }
 	});
 });
 //listen

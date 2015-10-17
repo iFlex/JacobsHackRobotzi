@@ -3,14 +3,25 @@
 module.exports = new (function(){
   var STORE_LOCATION = "store/";
   var db = 0;
+  var imgIndex = 0;
   this.setDBController = function(dbc){
     db = dbc;
+    db.select({
+      table:"plug",
+      collect:["COUNT(id) as MAX_INDEX"]
+    },function(result){
+      if(result.success == true){
+        console.log("Found largest record");
+        console.log(result);
+        imgIndex = result.rows[0]["MAX_INDEX"] || 0;
+      }
+    })
   }
 
   this.handle = function(socket,data,callback){
     try {
       var handler = actionToMethod[data.action];
-      handler(data,callback);
+      this[handler](data,callback);
     } catch(e) {
       console.log("Plugs:: Error");
       console.log(e);
@@ -40,7 +51,7 @@ module.exports = new (function(){
     storeImage(data,"test.txt",console.log);
   }
 
-  function addPlug(data,callback){
+  this.addPlug = function(data,callback){
     var result = {success:false}
     //check if it exists
     //sb.select()
@@ -48,21 +59,23 @@ module.exports = new (function(){
     //insert it
     db.insert({
       table:"plug",
-      set:{
+      write:{
+        id:imgIndex,
         lat:data.lat,
         lon:data.lon,
         description:data.description
       }
     },function(res){
       if(!res.success){
-        callback(res)
+        callback(res);
         return;
       }
       //collect id from
       console.log("Result from query");
       console.log(res);
-      var imid = 0;
-      storeImage(rawImage,imid+extension,function(res){
+      var imid = imgIndex++;
+      var extension = ".txt";
+      storeImage(data.image,imid+extension,function(res){
         if(!res.success){
           callback(res);
           return;
@@ -74,7 +87,7 @@ module.exports = new (function(){
     });
   }
 
-  function rateUp(data,callback){
+  this.rateUp = function(data,callback){
     try {
       db.update({
         table:"plug",
@@ -91,7 +104,7 @@ module.exports = new (function(){
     }
   }
 
-  function rateDn(data,callback){
+  this.rateDn = function(data,callback){
     try {
       db.update({
         table:"plug",
@@ -108,7 +121,7 @@ module.exports = new (function(){
     }
   }
 
-  function getPlugs(data,callback){
+  this.getPlugs = function(data,callback){
     try {
       db.select({
         table:"plug",
@@ -129,7 +142,7 @@ module.exports = new (function(){
     }
   }
 
-  function getImage = function(d,callback){
+  this.getImage = function(d,callback){
     try {
       var data = fs.readFileSync(STORE_LOCATION+d.id+".jpeg");
       var base64data = new Buffer(data).toString('base64');

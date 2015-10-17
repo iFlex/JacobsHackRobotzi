@@ -1,5 +1,5 @@
 //import components
-//var plugs = require('./managers/plugs');
+var plugs = require('./managers/plugs');
 var users = require('./managers/users');
 var chat = require('./managers/chat');
 
@@ -9,7 +9,7 @@ var sql = require("./sql");
 sql.init("test.db");
 //sql.testInsert();
 //sql.testSelect();
-
+/*
 
 sql.insert({table:"user",write:{ rating_giver: 100, rating_needer: 0, email:"yahoo.com"}}, function(res){
 	console.log("INSERT R:");
@@ -25,5 +25,17 @@ sql.select({table:"user",collect:["*"], restrict:["1=1"]},function(res){
   console.log("QUERY R:");
   console.log(res);
 });
+*/
 
-
+plugs.setDBController(sql);
+plugs.handle(null,{
+  action:"add",
+  image:"YWxza2ZoYXNsa2pkZnN2ZDtrLmhmYWJza2YgYWxza2pkbmFzZmxpdWRsa2FzYnp4bGNrempiIHhrLmM=",
+  lat:0.5,
+  lon:0.5,
+  description:"boom boom",
+  extensions:".jpg"
+},function(result){
+  console.log("Finished test");
+  console.log(result);
+})
