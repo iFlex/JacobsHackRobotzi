@@ -30,21 +30,21 @@ module.exports = new (function(){
     db.serialize(function() {
       db.run("CREATE TABLE if not exists user"+
       "(id           INTEGER        PRIMARY KEY   AUTOINCREMENT   ,"+
-      "rating_giver  INTEGER        NOT NULL                      ,"+
-      "rating_needer INTEGER        NOT NULL                      ,"+
+      "rating_giver  INTEGER        DEFAULT 0                     ,"+
+      "rating_needer INTEGER        DEFAULT 0                     ,"+
       "email         STRING         NOT NULL                      )");
 
       db.run("CREATE TABLE if not exists  token"+
       "(id           INTEGER        REFERENCES User ( id )        ,"+
-      "token         STRING                                       )");
+      "token         STRING         NOT NULL                      )");
 
       db.run("CREATE TABLE if not exists  plug"+
       "(id           INTEGER        PRIMARY KEY    AUTOINCREMENT  ,"+
       "lat           INTEGER        NOT NULL                      ,"+
       "lon           INTEGER        NOT NULL                      ,"+
-      "rank          INTEGER        NOT NULL                      ,"+
+      "rank          INTEGER        DEFAULT 0                     ,"+
       "description   STRING         NOT NULL                      ,"+
-      "slots         INTEGER                                      )");
+      "slots         INTEGER        DEFAULT 1S                     )");
     });
   }
   this.init = function(dbName){
