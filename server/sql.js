@@ -1,6 +1,30 @@
 module.exports = new (function(){
   var sqlite3 = require('sqlite3').verbose();
   var db = 0;
+  
+  function error(e, result, callback){
+		result.error = e;
+		result.success = false;
+		callback( result );
+	}
+	
+	function report( result, querry, callback ){
+		
+		try{
+		result = db.all( querry , function(err, rows){
+			if(err)
+				error(err, result, callback);
+			
+			result.success=true;
+			result.rows = rows;
+			callback(result);
+		});
+		
+		}
+		catch( e ){
+			error(e, result, callback);
+		}
+	}
 
   function initSchema(){
     db.serialize(function() {
@@ -69,30 +93,7 @@ module.exports = new (function(){
 
 	querry +=";";
 
-	try{
-
-		//var stmt = db.prepare( querry );
-		//result = stmt.run.apply( stmt, map.collect, map.restrict );
-		//stmt.finalize();
-		console.log(querry);
-		
-		result = db.all( querry , function(err, rows){
-			console.log( rows );
-			
-			//console.log("bullshit");
-			//console.log(err);
-		});
-
-		result.success = true;
-
-	}
-	catch( e ){
-
-		result.error = e;
-		result.success = false;
-		callback( result );
-		return;
-	}
+	report( result, querry, callback );
 	
 
 	
@@ -102,47 +103,84 @@ module.exports = new (function(){
   this.insert = function( map, callback ){
 
 		var querry = "INSERT INTO ";
+		var keys = "";
 		var values = "";
 		var parameters = [];
 		var result = {};
 
-		querry += map["#table"];
+		querry += map["table"];
 
-		for( key in map){
-		if( map.key === true && key!= "#tabel" ){
+		keys +="(";
+		values +="(";
+		var i = 0;
+		for( key in map.write){
+			
+			keys += ((i>0)?",":" ") + key;
 
 			parameters.push(key);
-			values += ((parameters.length>0)?",":"") + "? ";
+			var addValue = map.write[key];
+			if( typeof map.write[key] == "string")
+				addValue = '"'+addValue+'"';
+			values += ((i>0)?",":" ") + addValue;
+			i++;
 		}
+		
+		keys +=")";
+		values +=")";
 
-		querry += "(";
+		querry += keys;
+		querry += " VALUES ";
 		querry += values;
-		querry += ")";
-		querry += "VALUE";
-		querry += "(";
-		querry += values;
-		querry += ");";
-	}
+		querry += " ;";
+	
+		console.log( querry );
 
-	try{
-
-		var stmt = db.prepare( querry );
-		result = stmt.run.apply( stmt, parameters );
-		stmt.finalize();
-	}
-	catch( e ){
-
-		result.error = e;
-		result.success = false;
-		callback( result );
-		return;
-	}
-	result.success = true;
-
-	callback( result );
+		report( result, querry, callback );
 
   }
 
+	this.update = function( map, callback ){
+		
+		var querry = "UPDATE ";
+		var values = "";
+		var match = "";
+		var result = {};
 
+		querry += map["table"];
+		querry += " SET ";
+	
+		var i = 0;
+		for( key in map.write){
+			
+			values += ((i>0)?",":" ") + key;
+			var addValue = map.write[key];
+			if( typeof map.write[key] == "string")
+				addValue = '"'+addValue+'"';
+			values += "=" + addValue;
+			i++;
+		}
+		
+		querry += values;
+		
+		if( map.match != undefined ){
+		
+			querry += " WHERE ";
+
+			for( i in map.match ){
+				match +=((i>0)?" AND ":" ") +i+" = "+ map.match[i];
+			}
+			
+			querry += match;
+		}
+		
+		querry += " ;";
+	
+		console.log( querry );
+	
+	
+		report( result, querry, callback);
+	}
+	
+	
 
 })();
