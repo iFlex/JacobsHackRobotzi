@@ -182,5 +182,32 @@ module.exports = new (function(){
 	}
 	
 	
+	this.erase = function(map, callback){
+		
+		var querry = "DELETE FROM ";
+		var match = "";
+		var result = {};
+		
+		querry += map["table"];
+		
+		if( map.match != undefined ){
+		
+			querry += " WHERE ";
+
+			for( i in map.match ){
+				match +=((i>0)?" AND ":" ") +i+" = "+ map.match[i];
+			}
+			
+			querry += match;
+		}
+		
+		querry +=";";
+		
+		console.log( querry );
+		
+		report( result, querry, callback);
+		
+	}
+	
 
 })();

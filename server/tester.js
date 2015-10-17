@@ -21,6 +21,12 @@ sql.update({table:"user", match:{ id:100 }, write:{ rating_giver: 400 }}, functi
 	console.log(res);
 });
 
+sql.erase({table:"user", match:{ id:100 }}, function(res){
+	
+	console.log("ERASE R:");
+	console.log(res);
+}); 
+
 sql.select({table:"user",collect:["*"], restrict:["1=1"]},function(res){
   console.log("QUERY R:");
   console.log(res);
