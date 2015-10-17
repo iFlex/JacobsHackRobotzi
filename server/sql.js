@@ -48,23 +48,27 @@ module.exports = new (function(){
 
   this.select = function( map, callback ){
 	var querry= "SELECT ";
-	var parameters = [];
 	var result = {};
-	for( key in map){
-		if( map.key === true && key!= "#tabel" ){
+	for( i in map.collect ){
 
-			parameters.push(key);
-			querry += ((parameters.length>0)?",":"") + "? ";
-		}
+		querry += ((i>0)?",":"") + "? ";
+
 	}
 	querry += "FROM ";
-	querry += map["#table"];
-	querry += ";";
+	querry += map["table"];
+	querry += "WHERE ";
+	
+	for( i in map.restrict ){
+		
+		querry += ((i>0)?" AND ":"")+ map.restrict[i];
+	}
+
+	querry +=";";
 
 	try{
 
 		var stmt = db.prepare( querry );
-		result = stmt.run.apply( stmt, parameters );
+		result = stmt.run.apply( stmt, map.collect );
 		stmt.finalize();
 	}
 	catch( e ){
@@ -123,6 +127,7 @@ module.exports = new (function(){
 	callback( result );
 	
   }
+  
   
 
 })();
