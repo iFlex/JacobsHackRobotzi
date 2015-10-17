@@ -4,17 +4,17 @@ module.exports = new (function(){
 
   function initSchema(){
     db.serialize(function() {
-      db.run("CREATE TABLE if not exists User"+
+      db.run("CREATE TABLE if not exists user"+
       "(id           INTEGER        PRIMARY KEY   AUTOINCREMENT   ,"+
       "rating_giver  INTEGER        NOT NULL                      ,"+
       "rating_needer INTEGER        NOT NULL                      ,"+
       "email         STRING         NOT NULL                      )");
 
-      db.run("CREATE TABLE if not exists  Token"+
+      db.run("CREATE TABLE if not exists  token"+
       "(id           INTEGER        REFERENCES User ( id )        ,"+
       "token         STRING                                       )");
 
-      db.run("CREATE TABLE if not exists  PLUG"+
+      db.run("CREATE TABLE if not exists  plug"+
       "(id           INTEGER        PRIMARY KEY    AUTOINCREMENT  ,"+
       "lat           INTEGER        NOT NULL                      ,"+
       "lung          INTEGER        NOT NULL                      ,"+
@@ -51,25 +51,40 @@ module.exports = new (function(){
 	var result = {};
 	for( i in map.collect ){
 
-		querry += ((i>0)?",":"") + "? ";
+		querry += ((i>0)?", ":" ") + map.collect[i];
 
 	}
-	querry += "FROM ";
+	querry += " FROM ";
 	querry += map["table"];
-	querry += " WHERE ";
+	
+	if( map.restrict != undefined ){
+		
+		querry += " WHERE ";
 
-	for( i in map.restrict ){
+		for( i in map.restrict ){
 
-		querry += ((i>0)?" AND ":"")+ "?";
+			querry += ((i>0)?" AND ":" ")+ map.restrict[i];
+		}
 	}
 
 	querry +=";";
 
 	try{
 
-		var stmt = db.prepare( querry );
-		result = stmt.run.apply( stmt, map.collect, map.restrict );
-		stmt.finalize();
+		//var stmt = db.prepare( querry );
+		//result = stmt.run.apply( stmt, map.collect, map.restrict );
+		//stmt.finalize();
+		console.log(querry);
+		
+		result = db.run( querry , function(err, row){
+			console.log( row );
+			
+			console.log("bullshit");
+			console.log(err);
+		});
+		
+		result.success = true;
+		
 	}
 	catch( e ){
 
@@ -78,9 +93,9 @@ module.exports = new (function(){
 		callback( result );
 		return;
 	}
-	result.success = true;
+	
 
-	callback( result );
+	
 
   }
 
