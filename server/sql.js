@@ -155,6 +155,10 @@ module.exports = new (function(){
 			var addValue = map.write[key];
 			if( typeof map.write[key] == "string")
 				addValue = '"'+addValue+'"';
+			else if( typeof map.write[key] =="array"){
+				
+				addValue = map.write[key].join(" ");
+			}
 			values += "=" + addValue;
 			i++;
 		}
