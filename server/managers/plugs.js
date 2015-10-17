@@ -35,11 +35,12 @@ module.exports = new (function(){
       callback(result);
     }
   }
+
   this.storeTest = function(data){
     storeImage(data,"test.txt",console.log);
   }
 
-  this.addPlug = function(data,callback){
+  function addPlug(data,callback){
     var result = {success:false}
     //check if it exists
     //sb.select()
@@ -73,7 +74,7 @@ module.exports = new (function(){
     });
   }
 
-  this.rateUp = function(data,callback){
+  function rateUp(data,callback){
     try {
       db.update({
         table:"plug",
@@ -90,7 +91,7 @@ module.exports = new (function(){
     }
   }
 
-  this.rateDn = function(data,callback){
+  function rateDn(data,callback){
     try {
       db.update({
         table:"plug",
@@ -107,7 +108,7 @@ module.exports = new (function(){
     }
   }
 
-  this.getPlugs = function(data,callback){
+  function getPlugs(data,callback){
     try {
       db.select({
         table:"plug",
@@ -128,10 +129,15 @@ module.exports = new (function(){
     }
   }
 
+  function getImage = function(){
+
+  }
+
   var actionToMethod = {
     add:"addPlug",
     rateUp:"rateUp",
     rateDn:"rateDn",
-    get:"getPlugs"
+    get:"getPlugs",
+    getImage:"getImage"
   };
 })();
