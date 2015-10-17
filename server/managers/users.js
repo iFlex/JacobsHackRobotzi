@@ -5,7 +5,7 @@ module.export = function(){
         db = dbc;
     }
 
-    this.handle socket,data,callback){
+    this.handle socket(data,callback){
         try {
             var handler = actionToMethod[data.action];
             this[handler](data,callback);
