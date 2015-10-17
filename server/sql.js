@@ -45,4 +45,29 @@ module.exports = new (function(){
         console.log(err);
     });
   }
+  
+  this.select = function( map, callback ){
+	var querry= "SELECT ";
+	var parameters = [];
+	for( key in map){
+		if( map.key === true && key!= "#tabel" ){
+			
+			parameters.push(key);
+			querry += ((parameters.length>0)?",":"") + "? ";
+		} 
+	}
+	querry += "FROM ";
+	querry += map["#table"];
+	querry += ";";
+	
+	var stmt = db.prepare( querry );
+	var result = stmt.run.apply( this, parameters );
+	stmt.finalize();
+	
+	result.success = true;
+	
+	callback( result );
+	
+  }
+  
 })();
