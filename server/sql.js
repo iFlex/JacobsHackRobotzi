@@ -60,7 +60,7 @@ module.exports = new (function(){
 
 	for( i in map.restrict ){
 
-		querry += ((i>0)?" AND ":"")+ map.restrict[i];
+		querry += ((i>0)?" AND ":"")+ "?";
 	}
 
 	querry +=";";
@@ -68,7 +68,7 @@ module.exports = new (function(){
 	try{
 
 		var stmt = db.prepare( querry );
-		result = stmt.run.apply( stmt, map.collect );
+		result = stmt.run.apply( stmt, map.collect, map.restrict );
 		stmt.finalize();
 	}
 	catch( e ){
