@@ -65,11 +65,12 @@ module.export = function(){
     this.refreshPos = function(data,callback){
         db.update({
            table:endpoint,
-           match:{id:data.id}
+           match:{id:data.id},
            write:{
             lat:data.lat,
             lon:data.lon
-           },function(res){
+           }
+        },function(res){
              if(!res.success){
                callback(res);
                return;
@@ -77,7 +78,6 @@ module.export = function(){
              res.endpoint = endpoint;
              res.id = token;
              callback(res);
-           })
         });
     }
     //refreshes what chargers the user owns
@@ -125,7 +125,7 @@ module.export = function(){
             table:"charger",
             collect:["user"],
             restrict:["id IN ("+data.need.join(",")+")"]
-        }},function(result){
+        },function(result){
             if(result.success == true){
                 //extract
                 var users = []
@@ -136,7 +136,7 @@ module.export = function(){
                     table:endpoint,
                     collect:["*"],
                     restrict:["id IN ("+users.join(",")+")",
-                    "(lat - "+data.lat+")*(lat - "+data.lat+") + (lon - "+data.lon+")*(lon - "+data.lon+") <"+(data.radius*data.radius)"]
+                    "(lat - "+data.lat+")*(lat - "+data.lat+") + (lon - "+data.lon+")*(lon - "+data.lon+") <"+(data.radius*data.radius)]
                 },function(result){
                     if(result.success == true){
                         result.endpoint = endpoint;
