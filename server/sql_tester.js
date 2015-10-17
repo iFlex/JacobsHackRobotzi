@@ -6,7 +6,7 @@ var sql = require("./sql");
 
 sql.init("test.db");
 
-sql.insert({table:"user",write:{ rating_giver: 100, rating_needer: 0, email:"yahoo.com"}}, function(res){
+sql.insert({table:"user"}, function(res){
 	console.log("INSERT R:");
 	console.log(res);
 });

@@ -44,7 +44,7 @@ module.exports = new (function(){
       "lon           INTEGER        NOT NULL                      ,"+
       "rank          INTEGER        DEFAULT 0                     ,"+
       "description   STRING         NOT NULL                      ,"+
-      "slots         INTEGER        DEFAULT 1S                     )");
+      "slots         INTEGER        DEFAULT 1                     )");
     });
   }
   this.init = function(dbName){
