@@ -43,14 +43,16 @@ module.exports = new (function(){
     var result = {success:false}
     //check if it exists
     //sb.select()
-    //insert it
-    var rawImage = data.rawImage;
-    var extension = data.extension
 
-    delete data.rawImage;
-    delete data.extension;
-    data["#table"] = "plug";
-    db.insert(data,function(res){
+    //insert it
+    db.insert({
+      table:"plug",
+      set:{
+        lat:data.lat,
+        lon:data.lon,
+        description:data.description
+      }
+    },function(res){
       if(!res.success){
         callback(res)
         return;
@@ -72,14 +74,58 @@ module.exports = new (function(){
   }
 
   this.rateUp = function(data,callback){
-
+    try {
+      db.update({
+        table:"plug",
+        match:{
+          id:data.id
+        },
+        set:{
+          rank:"rank + 2"
+        }},callback);
+    } catch (e) {
+      console.log("PLUGS: Error RateUp");
+      console.log(e);
+      callback({success:false,error:e});
+    }
   }
 
   this.rateDn = function(data,callback){
-
+    try {
+      db.update({
+        table:"plug",
+        match:{
+          id:data.id
+        },
+        set:{
+          rank:"rank - 1"
+        }},callback);
+    } catch (e) {
+      console.log("PLUGS: Error RateDown");
+      console.log(e);
+      callback({success:false,error:e});
+    }
   }
-  this.getPlugs = function(data,callback){
 
+  this.getPlugs = function(data,callback){
+    try {
+      db.select({
+        table:"plug",
+        collect:["id","lat","long"],
+        restrict:["SQRT( POW(lat - "+data.lat+",2) + POW( lon - "+data.lon+",2)  ) < "+rad]
+      },function(result) {
+        if(!result.success){
+          callback(result);
+          return;
+        }
+        //send back to user
+
+      });
+    } catch (e){
+      console.log("PLUGS: Error getPlugs");
+      console.log(e);
+      callback({success:false,error:e});
+    }
   }
 
   var actionToMethod = {

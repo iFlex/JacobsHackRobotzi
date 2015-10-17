@@ -57,9 +57,9 @@ module.exports = new (function(){
 	querry += "FROM ";
 	querry += map["table"];
 	querry += " WHERE ";
-	
+
 	for( i in map.restrict ){
-		
+
 		querry += ((i>0)?" AND ":"")+ map.restrict[i];
 	}
 
@@ -72,7 +72,7 @@ module.exports = new (function(){
 		stmt.finalize();
 	}
 	catch( e ){
-	
+
 		result.error = e;
 		result.success = false;
 		callback( result );
@@ -83,23 +83,23 @@ module.exports = new (function(){
 	callback( result );
 
   }
-  
-  this.insert ( map, callback ){
-	  
+
+  this.insert = function( map, callback ){
+
 		var querry = "INSERT INTO ";
 		var values = "";
 		var parameters = [];
 		var result = {};
-		
+
 		querry += map["#table"];
-		
+
 		for( key in map){
 		if( map.key === true && key!= "#tabel" ){
 
 			parameters.push(key);
 			values += ((parameters.length>0)?",":"") + "? ";
 		}
-		
+
 		querry += "(";
 		querry += values;
 		querry += ")";
@@ -108,7 +108,7 @@ module.exports = new (function(){
 		querry += values;
 		querry += ");";
 	}
-	
+
 	try{
 
 		var stmt = db.prepare( querry );
@@ -116,7 +116,7 @@ module.exports = new (function(){
 		stmt.finalize();
 	}
 	catch( e ){
-	
+
 		result.error = e;
 		result.success = false;
 		callback( result );
@@ -125,9 +125,9 @@ module.exports = new (function(){
 	result.success = true;
 
 	callback( result );
-	
+
   }
-  
-  
+
+
 
 })();
