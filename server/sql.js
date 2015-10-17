@@ -67,7 +67,7 @@ module.exports = new (function(){
 		result = stmt.run.apply( stmt, parameters );
 		stmt.finalize();
 	}
-	catch( e){
+	catch( e ){
 	
 		result.error = e;
 		result.success = false;
@@ -78,6 +78,50 @@ module.exports = new (function(){
 
 	callback( result );
 
+  }
+  
+  this.insert ( map, callback ){
+	  
+		var querry = "INSERT INTO ";
+		var values = "";
+		var parameters = [];
+		var result = {};
+		
+		querry += map["#table"];
+		
+		for( key in map){
+		if( map.key === true && key!= "#tabel" ){
+
+			parameters.push(key);
+			values += ((parameters.length>0)?",":"") + "? ";
+		}
+		
+		querry += "(";
+		querry += values;
+		querry += ")";
+		querry += "VALUE";
+		querry += "(";
+		querry += values;
+		querry += ");";
+	}
+	
+	try{
+
+		var stmt = db.prepare( querry );
+		result = stmt.run.apply( stmt, parameters );
+		stmt.finalize();
+	}
+	catch( e ){
+	
+		result.error = e;
+		result.success = false;
+		callback( result );
+		return;
+	}
+	result.success = true;
+
+	callback( result );
+	
   }
   
 
