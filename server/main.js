@@ -1,4 +1,4 @@
-const PORT=8080;
+const PORT=8101;
 //HTTP
 var http = require('http');
 var mime = require('mime');
@@ -6,10 +6,9 @@ var server = http.createServer();
 var io = require('socket.io')(server);
 
 //import components
-var plugs = require('managers/plugs.js');
-var users = require('managers/users.js');
-var chat = require('managers/chat.js');
-
+var plugs = require('./managers/plugs');
+var users = require('./managers/users');
+var chat = require('./managers/chat');
 
 io.on('connection', function (socket) {
 	console.log("New connection");
@@ -18,15 +17,18 @@ io.on('connection', function (socket) {
     console.log(data)
     try {
       data = JSON.parse(data);
-      data.server = "booyah!";
-      data = JSON.stringify(data);
-      socket.emit('loop',data);
     } catch(e){
       console.log("ERROR PARSING DATA",e);
+      return;
+    }
+    
+    switch(data.endpoint){
+      case "plug":plugs.handle(socket,data);break;
+      case "user":users.handle(socket,data);break;
+      case "chat":chat.handler(socket,data);break;
     }
 	});
 });
-
 //listen
 server.listen(PORT, function(){
     console.log("Server listening on port:%s", PORT);
