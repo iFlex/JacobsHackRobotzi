@@ -2,6 +2,11 @@
 // .action = add|rateUp|rateDn|get
 module.exports = new (function(){
 
+  var db = 0;
+  this.setDBController = function(dbc){
+    db = dbc;
+  }
+
   this.handle = function(socket,data,callback){
     try {
       var handler = actionToMethod[data.action];
@@ -34,7 +39,8 @@ module.exports = new (function(){
     storeImage(data,"test.txt",console.log);
   }
   this.addPlug = function(data,callback){
-
+    //add coordinates
+    imgid
   }
   this.rateUp = function(data,callback){
 
