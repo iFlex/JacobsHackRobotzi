@@ -14,10 +14,10 @@ var chat = require('./managers/chat');
 sql.init("database.db");
 //pass db controller
 plugs.setDBController(sql);
-
+var commEndpoint = "live"
 io.on('connection', function (socket) {
 	console.log("New connection");
-	socket.on('/', function (data) {
+	socket.on(commEndpoint, function (data) {
         console.log("data from user");
         console.log(data)
         try {
@@ -29,7 +29,7 @@ io.on('connection', function (socket) {
 
         function sendToUser(data){
             if(data.success == true)
-                socket.emit("/",JSON.stringify(data));
+                socket.emit(commEndpoint,JSON.stringify(data));
             else {
                 console.log("ERROR PROCESSING REQUEST");
                 console.log(data);

@@ -2,38 +2,13 @@
 var plugs = require('./managers/plugs');
 var users = require('./managers/users');
 var chat = require('./managers/chat');
-
+var sleep = require('sleep');
 var sql = require("./sql");
 
 //plugs.storeTest("T25jZSB1cG9uIGEgdGltZSBsb3JlbSBpcHN1bSBicyE=");
 sql.init("test.db");
-//sql.testInsert();
-//sql.testSelect();
-/*
-
-sql.insert({table:"user",write:{ rating_giver: 100, rating_needer: 0, email:"yahoo.com"}}, function(res){
-	console.log("INSERT R:");
-	console.log(res);
-});
-
-sql.update({table:"user", match:{ id:100 }, write:{ rating_giver: 400 }}, function(res){
-	console.log("UPDATE R:");
-	console.log(res);
-});
-
-sql.erase({table:"user", match:{ id:100 }}, function(res){
-	
-	console.log("ERASE R:");
-	console.log(res);
-}); 
-
-sql.select({table:"user",collect:["*"], restrict:["1=1"]},function(res){
-  console.log("QUERY R:");
-  console.log(res);
-});
-*/
-
 plugs.setDBController(sql);
+console.log("testing add");
 plugs.handle(null,{
   action:"add",
   image:"YWxza2ZoYXNsa2pkZnN2ZDtrLmhmYWJza2YgYWxza2pkbmFzZmxpdWRsa2FzYnp4bGNrempiIHhrLmM=",
@@ -44,4 +19,35 @@ plugs.handle(null,{
 },function(result){
   console.log("Finished test");
   console.log(result);
+  console.log("testing rank up");
+  plugs.handle(null,{
+    action:"rateUp",
+    id:0
+  },function(result){
+    console.log("Finished test");
+    console.log(result);
+
+    console.log("testing rank down");
+    plugs.handle(null,{
+      action:"rateDn",
+      id:0
+    },function(result){
+      console.log("Finished test");
+      console.log(result);
+      plugs.handle(null,{
+            action:"get",
+            lat:0.1,
+            lon:0.1,
+            radius:10
+          },function(result){
+            console.log("Finished get");
+            console.log(result);
+          });
+    });
+  })
 })
+
+
+
+
+
