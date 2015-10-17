@@ -51,7 +51,7 @@ module.export = function(){
         db.select({
             table:"user",
             collect:["id"],
-            restrict:['id = "' + data.token + '"']
+            restrict:['id = "' + data.id + '"']
         },function(result){
             if(result.success == true){
                 result.endpoint = endpoint;
@@ -82,7 +82,42 @@ module.export = function(){
     }
     //refreshes what chargers the user owns
     this.refreshAssets = function(data,callback){
+        var inserted = {};
+        for( i in data.owns )
+            inserted[data.owns[i]] = 0;
+        for( i in data.owns)
+            addOwned(data.owns[i]);
 
+        function checkIfFinished(){
+            finished = true;
+            success = true;
+            for( i in inserted) {
+                if( inserted[i] < 2 )
+                    success = false;
+                if( inserted[i] < 1)
+                    finished = false;
+            }
+
+            if(finished)
+                callback({success:success,endpoint:endpoint});
+        }
+
+        function addOwned(id){
+            db.insert({
+                table:"charger",
+                set:{
+                    model:id,
+                    user:data.id
+                }
+            },function(result){
+                if(result.success == true)
+                    inserted[id] = 2;
+                else
+                    inserted = 1;
+
+                checkIfFinished();
+            });
+        }
     }
     //find users that have the desired chargers
     this.findHelpers = function(data,callback){
