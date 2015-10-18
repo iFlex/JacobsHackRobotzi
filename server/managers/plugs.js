@@ -5,7 +5,6 @@ module.exports = new (function(){
   var db = 0;
   var imgIndex = 0;
   var endpoint = "plug";
-
   this.setDBController = function(dbc){
     db = dbc;
   }
@@ -161,6 +160,7 @@ module.exports = new (function(){
   this.getImage = function(d,callback){
     var fileName = STORE_LOCATION+d.id+".jpeg"
     try {
+      var fs = require("fs");
       var data = fs.readFileSync(fileName);
       var base64data = new Buffer(data).toString('base64');
       var result = {success:true,endpoint:endpoint,image:base64data};
