@@ -1,6 +1,6 @@
 var io = require("socket.io-client");
 
-socket = io("https://portalvhdsw4758qvt0rmdk.blob.core.windows.net/vhds/robotzi2-robotzi2-2015-10-12.vhd");
+socket = io("http://ec2-52-26-81-246.us-west-2.compute.amazonaws.com:8080");
 
 socket.emit('live',JSON.stringify({
     endpoint:"plug",

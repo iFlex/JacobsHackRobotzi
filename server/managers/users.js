@@ -121,21 +121,26 @@ module.exports = new( function(){
     }
     //find users that have the desired chargers
     this.findHelpers = function(data,callback){
+        var addStr = "";
+        for( k in data.need)
+            addStr += ((k==0)?" ":",")+data.need[k];
+
         db.select({
             table:"charger",
             collect:["user"],
-            restrict:["id IN ("+data.need.join(",")+")"]
+            restrict:["id IN ("+addStr+")"]
         },function(result){
             if(result.success == true){
                 //extract
-                var users = []
+                var users = ""
                 for( k in result.rows )
-                    users.push(result.rows[k].user);
+                    users += ((k==0)?" ":",") + result.rows[k];
+
                 //query for users
                 db.select({
                     table:endpoint,
                     collect:["*"],
-                    restrict:["id IN ("+users.join(",")+")",
+                    restrict:["id IN ("+users+")",
                     "(lat - "+data.lat+")*(lat - "+data.lat+") + (lon - "+data.lon+")*(lon - "+data.lon+") <"+(data.radius*data.radius)]
                 },function(result){
                     if(result.success == true){
