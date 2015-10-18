@@ -130,7 +130,7 @@ module.exports = new( function(){
                 //extract
                 var users = []
                 for( k in result.rows )
-                    users.push(results.rows[k].user);
+                    users.push(result.rows[k].user);
                 //query for users
                 db.select({
                     table:endpoint,
