@@ -29,7 +29,7 @@ module.exports = new (function(){
   function initSchema(){
     db.serialize(function() {
       db.run("CREATE TABLE if not exists user"+
-      "(id           STRING         PRIMARY KEY    AUTOINCREMENT  ,"+
+      "(id           STRING         PRIMARY KEY                   ,"+
       "rating_giver  INTEGER        DEFAULT 0                     ,"+
       "rating_needer INTEGER        DEFAULT 0                     ,"+
       "lat           REAL           NOT NULL                      ,"+
