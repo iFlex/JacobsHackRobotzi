@@ -84,7 +84,7 @@ module.exports = new (function(){
              console.log("Result from query");
              console.log(res);
              var imid = imgIndex++;
-             var extension = ".jpeg  ";
+             var extension = ".jpeg";
              storeImage(data.image,imid+extension,function(res){
                if(!res.success){
                  callback(res);
@@ -159,13 +159,14 @@ module.exports = new (function(){
   }
 
   this.getImage = function(d,callback){
+    var fileName = STORE_LOCATION+d.id+".jpeg"
     try {
-      var data = fs.readFileSync(STORE_LOCATION+d.id+".jpeg");
+      var data = fs.readFileSync(fileName);
       var base64data = new Buffer(data).toString('base64');
       var result = {success:true,endpoint:endpoint,image:base64data};
       callback(result);
     } catch(e){
-      consle.log("PLUG: Could not read file "+fileName);
+      console.log("PLUG: Could not read file "+fileName);
       console.log(e);
       callback({success:false,error:e})
     }
