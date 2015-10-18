@@ -65,7 +65,7 @@ module.exports = new( function(){
     this.refreshPos = function(data,callback){
         db.update({
            table:endpoint,
-           match:{id:data.id},
+           match:{"id":data.id},
            write:{
             lat:data.lat,
             lon:data.lon
@@ -76,7 +76,7 @@ module.exports = new( function(){
                return;
              }
              res.endpoint = endpoint;
-             res.id = token;
+             res.id = data.id;
              callback(res);
         });
     }

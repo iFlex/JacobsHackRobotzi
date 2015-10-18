@@ -32,6 +32,8 @@ io.on('connection', function (socket) {
 
         function sendToUser(data){
             if(data.success == true)
+                //console.log("Sending back to user");
+                //console.log(JSON.stringify(data));
                 socket.emit(commEndpoint,JSON.stringify(data));
             else {
                 console.log("ERROR PROCESSING REQUEST");
