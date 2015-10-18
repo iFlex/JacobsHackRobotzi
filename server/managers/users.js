@@ -105,7 +105,7 @@ module.exports = new( function(){
         function addOwned(id){
             db.insert({
                 table:"charger",
-                set:{
+                write:{
                     model:id,
                     user:data.id
                 }
