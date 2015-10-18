@@ -127,14 +127,6 @@ module.exports = new (function(){
         }},function(r){
         r.endpoint = endpoint;
         callback(r);
-        ///////////////////////////////
-        db.erase({
-          table:endpoint,
-          restrict:["rank < 0"]
-        },function(res){
-          if(!res.success)
-            console.log("Could not delete sockets that have negative rank");
-        });
       });
     } catch (e) {
       console.log("PLUGS: Error RateDown");
