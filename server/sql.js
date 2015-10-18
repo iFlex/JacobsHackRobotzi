@@ -206,8 +206,8 @@ module.exports = new (function(){
 		
 			querry += " WHERE ";
 
-			for( i in map.match ){
-				match +=((i>0)?" AND ":" ") +i+" = "+ map.match[i];
+			for( i in map.restrict ){
+				match +=((i>0)?" AND ":" ") +map.restrict[i];
 			}
 			
 			querry += match;
