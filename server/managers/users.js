@@ -121,6 +121,7 @@ module.exports = new( function(){
     }
     //find users that have the desired chargers
     this.findHelpers = function(data,callback){
+
         var addStr = "";
         for( k in data.need)
             addStr += ((k==0)?" ":",")+data.need[k];

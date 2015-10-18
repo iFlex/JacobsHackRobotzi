@@ -158,17 +158,33 @@ module.exports = new (function(){
   }
 
   this.getImage = function(d,callback){
-    var fileName = STORE_LOCATION+d.id+".jpeg"
-    try {
-      var fs = require("fs");
-      var data = fs.readFileSync(fileName);
-      var base64data = new Buffer(data).toString('base64');
-      var result = {success:true,endpoint:endpoint,image:base64data};
+    db.select({
+      table:endpoint,
+      collect:["*"],
+      restrict:["id = "+d.id]
+    },function(result) {
+      if(!result.success){
+        callback(result);
+        return;
+      }
+      ////////////////
+      result.endpoint = endpoint;
+      fillInFile(result,d);
       callback(result);
-    } catch(e){
-      console.log("PLUG: Could not read file "+fileName);
-      console.log(e);
-      callback({success:false,error:e})
+    });
+
+    function fillInFile(result,d){
+      var fileName = STORE_LOCATION+d.id+".jpeg"
+      try {
+        var fs = require("fs");
+        var data = fs.readFileSync(fileName);
+        var base64data = new Buffer(data).toString('base64');
+        result.image = base64data;
+      } catch(e){
+        console.log("PLUG: Could not read file "+fileName);
+        console.log(e);
+        callback({success:false,error:e})
+      }
     }
   }
 
