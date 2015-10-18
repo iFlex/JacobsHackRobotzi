@@ -32,8 +32,8 @@ module.exports = new (function(){
       "(id           STRING         PRIMARY KEY    AUTOINCREMENT  ,"+
       "rating_giver  INTEGER        DEFAULT 0                     ,"+
       "rating_needer INTEGER        DEFAULT 0                     ,"+
-      "lon           REAL           NOT NULL                      ,"+
       "lat           REAL           NOT NULL                      ,"+
+      "lon           REAL           NOT NULL                      ,"+
       "email         STRING         NOT NULL                      )");
 
       db.run("CREATE TABLE if not exists  plug"+

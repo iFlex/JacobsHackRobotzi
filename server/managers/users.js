@@ -34,7 +34,7 @@ module.exports = new( function(){
             id:token,
             lat:0,
             lon:0,
-            email:"unknown@gmail.com",
+            email:"unknown@gmail.com"
            }
         },function(res) {
              if(!res.success){
