@@ -1,4 +1,4 @@
-const PORT=8101;
+const PORT=8080;
 //HTTP
 var http = require('http');
 var mime = require('mime');
@@ -21,8 +21,6 @@ var commEndpoint = "live"
 io.on('connection', function (socket) {
 	console.log("New connection");
 	socket.on(commEndpoint, function (data) {
-        console.log("data from user");
-        console.log(data)
         try {
           data = JSON.parse(data);
         } catch(e) {
@@ -40,7 +38,7 @@ io.on('connection', function (socket) {
                 console.log(data);
             }
         }
-
+	console.log("New request from user @"+data.endpoint+">"+data.action);
         switch(data.endpoint){
           case "plug":plugs.handle(socket,data,sendToUser);break;
           case "user":users.handle(socket,data,sendToUser);break;
