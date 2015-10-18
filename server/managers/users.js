@@ -134,7 +134,7 @@ module.exports = new( function(){
                 //extract
                 var users = ""
                 for( k in result.rows )
-                    users += ((k==0)?" ":",") + result.rows[k];
+                    users += ((k==0)?" ":",") +'"'+result.rows[k]["user"]+'"';
 
                 //query for users
                 db.select({
