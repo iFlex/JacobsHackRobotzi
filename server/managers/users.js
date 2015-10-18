@@ -65,7 +65,7 @@ module.exports = new( function(){
     this.refreshPos = function(data,callback){
         db.update({
            table:endpoint,
-           match:{"id":data.id},
+           match:{"id":'"'+data.id+'"'},
            write:{
             lat:data.lat,
             lon:data.lon
@@ -121,6 +121,8 @@ module.exports = new( function(){
     }
     //find users that have the desired chargers
     this.findHelpers = function(data,callback){
+        for( i in data.need )
+            data.need[i] = '"'+data.need[i]+'"';
         db.select({
             table:"charger",
             collect:["user"],
